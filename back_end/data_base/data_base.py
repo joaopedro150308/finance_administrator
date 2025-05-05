@@ -17,10 +17,11 @@ def criar_tabela_spents(conexao):
                 )''')
     conexao.commit()
 
-def insert_new_spent(conexao, spent, spent_id):
-    
+def insert_new_spent(conexao, spent):
+    last_spent_id = get_last_spent(conexao)[0]
+    new_spent_id = last_spent_id + 1
     cursor = conexao.cursor()
-    cursor.execute('INSERT INTO Spents VALUES (?, ?, ?, ?, ?)', (spent_id, spent.title, spent.description, str(spent.price), spent.date))
+    cursor.execute('INSERT INTO Spents VALUES (?, ?, ?, ?, ?)', (new_spent_id, spent.title, spent.description, str(spent.price), spent.date))
     conexao.commit()
     print('Spent registred sucessfully')
 
@@ -29,3 +30,9 @@ def get_all_spents(conexao):
     cursor.execute('SELECT * FROM Spents')
     spents_registred = cursor.fetchall()
     return spents_registred
+
+
+def get_last_spent(conexao):
+    all_spents = get_all_spents(conexao)
+    last_spent = all_spents[len(all_spents)-1]
+    return last_spent
